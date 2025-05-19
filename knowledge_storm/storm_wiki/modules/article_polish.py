@@ -9,9 +9,12 @@ from ...utils import ArticleTextProcessing
 
 
 class StormArticlePolishingModule(ArticlePolishingModule):
-    """
-    The interface for article generation stage. Given topic, collected information from
-    knowledge curation stage, generated outline from outline generation stage.
+    """Module responsible for the final polishing of a generated article.
+
+    This stage takes the draft article produced in the generation step and
+    refines it by writing a lead section and optionally removing duplicate
+    content. The goal is to return a clean, well-structured Wikipedia page that
+    summarizes the topic accurately.
     """
 
     def __init__(self,

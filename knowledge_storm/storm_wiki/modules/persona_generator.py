@@ -10,7 +10,13 @@ from bs4 import BeautifulSoup
 def get_wiki_page_title_and_toc(url):
     """Get the main title and table of contents from an url of a Wikipedia page."""
 
-    response = requests.get(url)
+    try:
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+    except requests.RequestException as e:
+        logging.error(f"Failed to fetch {url}: {e}")
+        return None, None
+
     soup = BeautifulSoup(response.content, 'html.parser')
 
     # Get the main title from the first h1 tag
@@ -76,6 +82,8 @@ class CreateWriterWithPersona(dspy.Module):
             for url in urls:
                 try:
                     title, toc = get_wiki_page_title_and_toc(url)
+                    if title is None:
+                        continue
                     examples.append(f'Title: {title}\nTable of Contents: {toc}')
                 except Exception as e:
                     logging.error(f'Error occurs when processing {url}: {e}')
